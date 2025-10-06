@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<!-- Устанавливаем язык по умолчанию, JS его изменит при необходимости -->
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Title будет меняться динамически -->
+    <title>Портфолио Разработчика: EW Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Анимации --- */
+        @keyframes subtle-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        @keyframes button-pulse {
+            0% { box-shadow: 0 4px 15px rgba(34, 211, 238, 0.3); }
+            50% { box-shadow: 0 4px 25px rgba(34, 211, 238, 0.5); }
+            100% { box-shadow: 0 4px 15px rgba(34, 211, 238, 0.3); }
+        }
+
+        /* Общие стили */
+        body {
+            background-color: #0c111c;
+            color: #e5e7eb;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        /* Градиент для студии и кнопок */
+        .studio-logo {
+            background: linear-gradient(45deg, #f0f9ff, #22d3ee, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 5px rgba(34, 211, 238, 0.4);
+            animation: subtle-float 5s ease-in-out infinite;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #22d3ee, #06b6d4);
+            transition: all 0.3s ease;
+            color: #0c111c;
+            font-weight: 700;
+            animation: button-pulse 3s ease-in-out infinite;
+        }
+        .btn-primary:hover {
+            transform: scale(1.05);
+            animation-play-state: paused; /* Останавливаем пульсацию при наведении */
+        }
+
+        /* Навигация */
+        .glass-nav {
+            background: rgba(12, 17, 28, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+        }
+
+        /* Hero Canvas */
+        .hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* Карточки */
+        .card {
+            background: #111827; /* gray-900 */
+            border: 1px solid #374151; /* gray-700 */
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(34, 211, 238, 0.3);
+            border-color: #22d3ee; /* cyan-400 */
+        }
+        .tag {
+            background: #374151; /* gray-700 */
+            color: #22d3ee; /* cyan-400 */
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+        .card:hover .tag {
+            background: #1d4ed8; /* blue-700 */
+            color: #fff;
+        }
+        
+        /* Анимация появления при скролле */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Стили для переключателя языка */
+        .language-switcher .dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 10px;
+            background-color: #111827;
+            border: 1px solid #374151;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.3);
+            z-index: 60;
+            overflow: hidden;
+            animation: dropdown-fade-in 0.3s ease-out;
+        }
+        @keyframes dropdown-fade-in {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .language-switcher:hover .dropdown {
+            display: block;
+        }
+        .language-switcher .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            white-space: nowrap;
+        }
+        .language-switcher .dropdown-item:hover {
+            background-color: #1f2937;
+        }
+
+        /* Стили для контента блога */
+        .prose {
+            color: #d1d5db; /* gray-300 */
+            line-height: 1.7;
+        }
+        .prose h3 {
+            color: #67e8f9; /* cyan-300 */
+            margin-bottom: 1rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        .prose p, .prose ul, .prose ol {
+            margin-bottom: 1.5rem;
+        }
+        .prose a {
+            color: #22d3ee;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+        .prose a:hover {
+            color: #67e8f9;
+        }
+        .prose ul, .prose ol {
+            padding-left: 1.5rem;
+        }
+        .prose li {
+            margin-bottom: 0.5rem;
+        }
+        .prose strong {
+            color: #f9fafb; /* gray-50 */
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- Навигация (EW Studio) -->
+    <header class="glass-nav sticky top-0 z-50" id="main-header">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#hero" class="text-3xl font-orbitron studio-logo hover:opacity-80 transition-opacity">EW Studio</a>
+            
+            <div class="flex items-center">
+                 <!-- Десктопное меню -->
+                <div class="hidden md:flex space-x-8 items-center mr-8">
+                    <a href="#about" class="text-gray-300 hover:text-cyan-400 transition-colors font-medium" data-lang="nav_about"></a>
+                    <a href="#projects" class="text-gray-300 hover:text-cyan-400 transition-colors font-medium" data-lang="nav_projects"></a>
+                    <a href="#blog" class="text-gray-300 hover:text-cyan-400 transition-colors font-medium" data-lang="nav_blog"></a>
+                    <a href="#contact" class="btn-primary py-2 px-6 rounded-lg shadow-lg" data-lang="nav_contact"></a>
+                </div>
+
+                <!-- Переключатель языка -->
+                <div class="relative language-switcher">
+                    <button id="lang-button" class="flex items-center p-2 rounded-md hover:bg-gray-800 transition-colors focus:outline-none">
+                        <span id="lang-flag" class="text-xl mr-2"></span>
+                        <span id="lang-text" class="font-medium text-sm"></span>
+                        <svg class="w-4 h-4 ml-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="lang-dropdown" class="dropdown">
+                        <!-- Элементы будут добавлены JS -->
+                    </div>
+                </div>
+
+                <!-- Мобильное меню (иконка) -->
+                <div class="md:hidden ml-4">
+                    <button id="mobile-menu-toggle" class="text-white focus:outline-none p-2 rounded-md hover:bg-gray-800 transition-colors">
+                        <svg id="menu-icon-open" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                        <svg id="menu-icon-close" class="w-7 h-7 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Выпадающее мобильное меню -->
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-900 border-t border-gray-700 absolute w-full left-0 py-4 shadow-xl">
+            <a href="#about" class="block py-2 px-6 text-gray-300 hover:bg-gray-800 transition-colors" data-menu-item data-lang="nav_about"></a>
+            <a href="#projects" class="block py-2 px-6 text-gray-300 hover:bg-gray-800 transition-colors" data-menu-item data-lang="nav_projects"></a>
+            <a href="#blog" class="block py-2 px-6 text-gray-300 hover:bg-gray-800 transition-colors" data-menu-item data-lang="nav_blog"></a>
+            <a href="#contact" class="block py-3 px-6 text-center btn-primary transition-colors mt-2" data-menu-item data-lang="nav_contact"></a>
+        </div>
+    </header>
+
+    <!-- Главный экран -->
+    <section id="hero" class="relative h-screen flex items-center justify-center text-center overflow-hidden">
+        <canvas id="hero-canvas" class="hero-canvas"></canvas>
+        <div class="relative z-10 px-4">
+            <p class="text-lg md:text-xl font-orbitron text-cyan-300 mb-2" data-lang="hero_subtitle"></p>
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-orbitron mb-4 studio-logo" data-lang="hero_title"></h1>
+            <p class="text-lg md:text-xl max-w-3xl mx-auto text-gray-300 mb-8" data-lang="hero_description"></p>
+            <a href="#projects" class="inline-block btn-primary py-3 px-10 rounded-full text-lg shadow-xl" data-lang="hero_button"></a>
+        </div>
+    </section>
+
+    <!-- Основной контейнер для страниц SPA -->
+    <main class="container mx-auto px-6 py-20 min-h-[60vh]">
+        
+        <!-- Секция "О студии" -->
+        <section id="about" class="fade-in-section spa-page">
+            <h2 class="text-3xl md:text-5xl font-orbitron text-center mb-16 text-cyan-400" data-lang="about_title"></h2>
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="w-full md:w-1/3 flex-shrink-0">
+                    <img src="https://placehold.co/400x400/1e293b/22d3ee?text=EW+Studio" alt="Логотип EW Studio" class="rounded-2xl shadow-2xl w-full border-4 border-cyan-500/50 object-cover aspect-square">
+                </div>
+                <div class="w-full md:w-2/3">
+                    <h3 class="text-2xl font-bold mb-4 text-white" data-lang="about_subtitle"></h3>
+                    <p class="text-gray-300 mb-4 text-lg leading-relaxed" data-lang="about_p1"></p>
+                    <p class="text-gray-300 text-lg leading-relaxed" data-lang="about_p2"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Секция "Проекты" (Список) -->
+        <section id="projects-list" class="fade-in-section spa-page hidden">
+            <h2 class="text-3xl md:text-5xl font-orbitron text-center mb-16 text-cyan-400" data-lang="projects_title"></h2>
+            <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <!-- Карточки будут добавлены JS -->
+            </div>
+        </section>
+
+        <!-- Секция "Блог" (Список) -->
+        <section id="blog-list" class="fade-in-section spa-page hidden">
+            <h2 class="text-3xl md:text-5xl font-orbitron text-center mb-16 text-cyan-400" data-lang="blog_title"></h2>
+            <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <!-- Карточки будут добавлены JS -->
+            </div>
+        </section>
+        
+        <!-- Секция "Контакты" -->
+        <section id="contact" class="fade-in-section spa-page hidden">
+            <h2 class="text-3xl md:text-5xl font-orbitron text-center mb-4 text-white" data-lang="contact_title"></h2>
+            <p class="max-w-2xl mx-auto mb-10 text-gray-400 text-center" data-lang="contact_subtitle"></p>
+            <form class="max-w-xl mx-auto space-y-6 text-left">
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-300 mb-1" data-lang="form_name"></label>
+                    <input type="text" id="name" required class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-cyan-500 focus:border-cyan-500 transition-colors">
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-300 mb-1" data-lang="form_email"></label>
+                    <input type="email" id="email" required class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-cyan-500 focus:border-cyan-500 transition-colors">
+                </div>
+                <div>
+                    <label for="message" class="block text-sm font-medium text-gray-300 mb-1" data-lang="form_message"></label>
+                    <textarea id="message" rows="4" required class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-cyan-500 focus:border-cyan-500 transition-colors"></textarea>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn-primary py-3 px-10 rounded-full text-lg shadow-xl w-full md:w-auto" data-lang="form_submit"></button>
+                </div>
+            </form>
+        </section>
+        
+        <!-- Контейнеры для детальных страниц (заполняются динамически) -->
+        <section id="project-detail" class="fade-in-section spa-page hidden"></section>
+        <section id="post-detail" class="fade-in-section spa-page hidden"></section>
+        
+    </main>
+
+    <!-- Подвал -->
+    <footer class="bg-gray-900 py-12">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-500" data-lang="footer_text"></p>
+        </div>
+    </footer>
+
+
+<script>
+// --- 1. СИСТЕМА ПЕРЕВОДА И ДАННЫЕ ---
+
+const translations = {
+    // --- РУССКИЙ ---
+    ru: {
+        // ... (остальные переводы без изменений)
+        page_title: "Портфолио Разработчика: EW Studio",
+        nav_about: "О студии", nav_projects: "Проекты", nav_blog: "Блог", nav_contact: "Связаться",
+        hero_subtitle: "Инди-разработка 2D-игр и веб-практика", hero_title: "Привет, я Axel Void Или просто Салих",
+        hero_description: "Инди-разработчик, осваивающий Godot 4 для создания увлекательных 2D-игр, а также изучающий веб-разработку (React/Three.js) для портфолио.",
+        hero_button: "Смотреть проекты",
+        about_title: "О студии EW Studio", about_subtitle: "Кто я и что создаю?",
+        about_p1: "EW Studio (Eclipse Work Studio) — мой личный проект. Я являюсь единственным разработчиком и сосредоточен на освоении Godot 4 для создания 2D-игр. На данный момент 3D-разработка пока не поддалась, поэтому я сфокусирован на создании глубоких и увлекательных миров в двух измерениях.",
+        about_p2: "Параллельно я изучаю веб-разработку (JavaScript, React), чтобы иметь возможность представить свои работы в лучшем виде. Этот сайт — часть моего учебного пути в вебе.",
+        projects_title: "Наши Проекты",
+        project_atlas_title: "Project Atlas: Destination", project_atlas_subtitle: "Пиксельная 2D-игра на Godot в стадии пре-альфа",
+        project_atlas_desc: "Игра в жанре Reverse Bullet Hell / Action Survival с атмосферой Cosmic Techno-Horror. Проект находится в активной разработке.",
+        project_atlas_tags: ['Godot 4', '2D', 'Pixel Art', 'Пре-альфа', 'В разработке'],
+        project_atlas_lore_title: "Описание (Лор)",
+        project_atlas_lore: `Ты когда-нибудь задумывался: какая нас ждет судьба? Project Atlas не выбирает лучших. Он выбирает тех, чей Навык должен быть извлечен. Тебя поместили в Пространство Код Зиро — нейтральную, бездушную симуляцию. Твой наставник, Терминал, требует одного: продержаться 120 минут.`,
+        project_atlas_challenges_title: "Сложности и Решения",
+        project_atlas_challenges: [
+            'Стиль: Реализация мрачного, высококонтрастного визуала в Godot 4.',
+            'Оптимизация: Обработка сотен врагов на экране в 2D без просадки FPS.',
+            'Разработка ЛОРа: Интеграция глубокого ЛОРа через внутриигровые тексты.'
+        ],
+        project_wip_title: "Проект в разработке...", project_wip_subtitle: "Скоро здесь будет что-то интересное.",
+        project_wip_desc: "Этот проект находится на ранней стадии. Подробности появятся позже.",
+        project_wip_tags: ['Скоро'],
+        btn_back_to_projects: "Назад к проектам", btn_view_details: "Смотреть детали", btn_steam_page: "Страница Steam", btn_playmarket_page: "Страница Play Market", status_soon: "Скоро",
+        blog_title: "Блог о Разработке", btn_read_more: "Читать далее →", btn_back_to_blog: "Назад к блогу",
+        // Посты блога
+        post1_title: "Почему я перешел от JS к Godot 4", post1_date: "06 октября 2025",
+        post1_summary: "Сравнение разработки 2D-игр на чистом Canvas/JS и на движке Godot. Как Godot упростил мой путь в геймдеве.",
+        post1_content: `<p>Создание первой игры — это всегда смесь эйфории и отчаяния. Мой первый проект был на чистом JavaScript. Я столкнулся с тем, что управление игровым циклом и обработка столкновений требовали огромного внимания.</p><h3>Ошибки, на которых я учился в JS:</h3><ul><li>"Мусорный Объект": Попытка запихнуть всю логику в один файл.</li><li>Проблема с FPS: Использование <strong>setInterval</strong> вместо <strong>requestAnimationFrame</strong>.</li></ul><p>Теперь в <strong>Godot 4</strong> многие эти проблемы решены движком, что позволяет сосредоточиться на геймдизайне.</p>`,
+        post2_title: "5 библиотек для веб-анимаций", post2_date: "28 сентября 2025",
+        post2_summary: "Обзор инструментов, которые помогают мне оживить мое веб-портфолио, от легких CSS-решений до мощных JS-фреймворков.",
+        post2_content: `<p>Анимация — это душа современного веба. Вот пять инструментов, которые я осваиваю:</p><ol><li><strong>Tailwind CSS Transitions:</strong> Идеально для быстрых UI-анимаций.</li><li><strong>GSAP (GreenSock):</strong> Профессиональный стандарт для сложных анимаций.</li><li><strong>Lottie:</strong> Для импорта анимаций из After Effects.</li><li><strong>Three.js:</strong> Если нужна 3D-анимация.</li><li><strong>Framer Motion (для React):</strong> Простой способ добавления переходов в React-приложениях.</li></ol>`,
+        post3_title: "Мысли о геймдизайне: как выжить в 2D", post3_date: "15 сентября 2025",
+        post3_summary: "Графика или геймплей? Размышления о том, что делает игру по-настоящему великой и почему механика важнее визуала.",
+        post3_content: `<p>В мире инди-геймдева часто приходится выбирать. Всегда ли графика имеет решающее значение?</p><h3>Геймплей - король</h3><p>Мой опыт показывает, что игроки простят простую графику, если механика глубока и увлекательна. Это особенно критично, когда вы один и сосредоточены на <strong>2D-разработке</strong>.</p><p>Я всегда придерживаюсь принципа: <strong>"Сначала геймплей, потом полировка"</strong>. Это позволяет быстро тестировать идеи и отсеивать неудачные.</p>`,
+        contact_title: "Свяжитесь с EW Studio", contact_subtitle: "Мы всегда открыты для новых проектов и общения. Отправьте нам сообщение!",
+        form_name: "Ваше имя", form_email: "Ваш Email", form_message: "Сообщение", form_submit: "Отправить сообщение",
+        footer_text: `&copy; ${new Date().getFullYear()} EW Studio. Разработано Axel Void с <span class="text-red-500">♥</span>`,
+    },
+    // --- АНГЛИЙСКИЙ ---
+    en: {
+        // ... (остальные переводы без изменений)
+        page_title: "Developer Portfolio: EW Studio",
+        nav_about: "About", nav_projects: "Projects", nav_blog: "Blog", nav_contact: "Contact",
+        hero_subtitle: "Indie 2D Game Development & Web Practice", hero_title: "Hi, I'm Axel Void or Just Salikh",
+        hero_description: "An indie developer mastering Godot 4 to create engaging 2D games, while also learning web development (React/Three.js) for my portfolio.",
+        hero_button: "View Projects",
+        about_title: "About EW Studio", about_subtitle: "Who I am and what I create?",
+        about_p1: "**EW Studio (Eclipse Work Studio) is my personal project. I, Axel Void, am the sole developer focused on mastering Godot 4** to create **2D games**. For now, 3D development has proven challenging, so I'm focused on creating deep and engaging worlds in two dimensions.",
+        about_p2: "In parallel, I'm learning **web development (JavaScript, React)** to showcase my work in the best possible way. This site is part of my web learning journey.",
+        projects_title: "Our Projects",
+        project_atlas_title: "Project Atlas: Destination", project_atlas_subtitle: "A 2D Pixel Art Godot game in pre-alpha stage",
+        project_atlas_desc: "A Reverse Bullet Hell / Action Survival game with a Cosmic Techno-Horror atmosphere. The project is under active development.",
+        project_atlas_tags: ['Godot 4', '2D', 'Pixel Art', 'Pre-Alpha', 'In Development'],
+        project_atlas_lore_title: "Description (Lore)",
+        project_atlas_lore: `Have you ever wondered: where does the game end and destiny begin? Project Atlas doesn't choose the best. It chooses those whose Skill must be extracted. You've been placed in Code Zero Space—a neutral, soulless simulation. Your mentor, Terminal, demands one thing: to survive for 120 minutes.`,
+        project_atlas_challenges_title: "Challenges & Solutions",
+        project_atlas_challenges: [
+            'Style: Implementing a dark, high-contrast visual style in Godot 4.',
+            'Optimization: Handling hundreds of enemies on-screen in 2D without FPS drops.',
+            'Lore Development: Integrating deep lore through in-game texts.'
+        ],
+        project_wip_title: "Project in Progress...", project_wip_subtitle: "Something interesting is coming soon.",
+        project_wip_desc: "This project is in the early stages. More details will be available later.",
+        project_wip_tags: ['Coming Soon'],
+        btn_back_to_projects: "Back to projects", btn_view_details: "View Details", btn_steam_page: "Steam Page", btn_playmarket_page: "Play Market Page", status_soon: "Coming Soon",
+        blog_title: "Development Blog", btn_read_more: "Read more →", btn_back_to_blog: "Back to blog",
+        // Blog Posts
+        post1_title: "Why I Switched from JS to Godot 4", post1_date: "October 06, 2025",
+        post1_summary: "A comparison of 2D game development on pure Canvas/JS versus the Godot engine. How Godot simplified my gamedev journey.",
+        post1_content: `<p>Creating your first game is always a mix of euphoria and despair. My first project was in pure JavaScript. I faced the challenge that managing the game loop and collision detection required immense attention.</p><h3>Mistakes I learned from in JS:</h3><ul><li>**The "God Object":** Trying to cram all logic into a single file.</li><li>**FPS issues:** Using <strong>setInterval</strong> instead of <strong>requestAnimationFrame</strong>.</li></ul><p>Now in <strong>Godot 4</strong>, many of these problems are solved by the engine, allowing me to focus on game design.</p>`,
+        post2_title: "5 Libraries for Web Animations", post2_date: "September 28, 2025",
+        post2_summary: "An overview of tools that help me bring my web portfolio to life, from lightweight CSS solutions to powerful JS frameworks.",
+        post2_content: `<p>Animation is the soul of the modern web. Here are five tools I'm mastering:</p><ol><li><strong>Tailwind CSS Transitions:</strong> Perfect for quick UI animations.</li><li><strong>GSAP (GreenSock):</strong> The professional standard for complex animations.</li><li><strong>Lottie:</strong> For importing animations from After Effects.</li><li><strong>Three.js:</strong> When you need 3D animation.</li><li><strong>Framer Motion (for React):</strong> An easy way to add transitions in React apps.</li></ol>`,
+        post3_title: "Game Design Thoughts: How to Survive in 2D", post3_date: "September 15, 2025",
+        post3_summary: "Graphics or gameplay? Reflections on what makes a game truly great and why mechanics are more important than visuals.",
+        post3_content: `<p>In the world of indie gamedev, you often have to make choices. Are graphics always crucial?</p><h3>Gameplay is King</h3><p>My experience shows that players will forgive simple graphics if the mechanics are deep and engaging. This is especially critical when you're a solo developer focusing on <strong>2D development</strong>.</p><p>I always stick to the principle: <strong>"Gameplay first, polish later."</strong> This allows for rapid testing of ideas and discarding failed ones early.</p>`,
+        contact_title: "Contact EW Studio", contact_subtitle: "We are always open to new projects and conversations. Send us a message!",
+        form_name: "Your Name", form_email: "Your Email", form_message: "Message", form_submit: "Send Message",
+        footer_text: `&copy; ${new Date().getFullYear()} EW Studio. Developed by Axel Void with <span class="text-red-500">♥</span>`,
+    },
+    // --- ЯПОНСКИЙ ---
+    jp: {
+        // ... (остальные переводы без изменений)
+        page_title: "開発者ポートフォリオ: EW Studio",
+        nav_about: "スタジオについて", nav_projects: "プロジェクト", nav_blog: "ブログ", nav_contact: "連絡先",
+        hero_subtitle: "インディー2Dゲーム開発とウェブ制作", hero_title: "こんにちは、[Axel Void]サリフです",
+        hero_description: "魅力的な2Dゲームを制作するためにGodot 4を習得中のインディー開発者です。ポートフォリオのためにウェブ開発（React/Three.js）も学んでいます。",
+        hero_button: "プロジェクトを見る",
+        about_title: "EW Studioについて", about_subtitle: "自己紹介と制作物",
+        about_p1: "**EW Studio (Eclipse Work Studio)** は私の個人プロジェクトです。私、Axel Voidが**唯一の開発者**として、**Godot 4**を使った**2Dゲーム**制作に集中しています。現時点では3D開発は難しいため、2次元で深く魅力的な世界を創造することに焦点を当てています。",
+        about_p2: "並行して、自分の作品を最良の形で見せるために**ウェブ開発（JavaScript、React）**を学んでいます。このサイトは私のウェブ学習の旅の一部です。",
+        projects_title: "私たちのプロジェクト",
+        project_atlas_title: "プロジェクト・アトラス：デスティネーション", project_atlas_subtitle: "Godot製2Dピクセルアートゲーム（プレアルファ段階）",
+        project_atlas_desc: "コズミック・テクノホラーの雰囲気を持つ「リバース・ブレットヘル / アクション・サバイバル」ゲーム。現在、活発に開発中です。",
+        project_atlas_tags: ['Godot 4', '2D', 'ピクセルアート', 'プレアルファ', '開発中'],
+        project_atlas_lore_title: "説明（世界観）",
+        project_atlas_lore: `考えたことはあるか？ゲームはどこで終わり、運命はどこで始まるのか？「プロジェクト・アトラス」は最高の者を選ばない。そのスキルを抽出されるべき者を選ぶ。君はコード・ゼロ・スペースという、中立で魂のないシミュレーションに配置された。指導者であるターミナルが要求するのは一つ、120分間生き残ることだ。`,
+        project_atlas_challenges_title: "課題と解決策",
+        project_atlas_challenges: [
+            'スタイル： Godot 4でダークでハイコントラストなビジュアルを実現する。',
+            '最適化： FPSを低下させずに2Dで画面上の数百の敵を処理する。',
+            '世界観の構築： ゲーム内のテキストを通じて深い世界観を統合する。'
+        ],
+        project_wip_title: "開発中のプロジェクト...", project_wip_subtitle: "もうすぐ面白いものが登場します。",
+        project_wip_desc: "このプロジェクトは初期段階です。詳細は後日公開します。",
+        project_wip_tags: ['近日公開'],
+        btn_back_to_projects: "プロジェクト一覧に戻る", btn_view_details: "詳細を見る", btn_steam_page: "Steamページ", btn_playmarket_page: "Play Marketページ", status_soon: "近日公開",
+        blog_title: "開発ブログ", btn_read_more: "続きを読む →", btn_back_to_blog: "ブログ一覧に戻る",
+        // Blog Posts
+        post1_title: "なぜJSからGodot 4に移行したのか", post1_date: "2025年10月06日",
+        post1_summary: "純粋なCanvas/JSでの2Dゲーム開発とGodotエンジンでの開発を比較。Godotが私のゲーム開発の道をいかに簡素化したか。",
+        post1_content: `<p>最初のゲームを作ることは、常に高揚感と絶望の mezcla です。私の最初のプロジェクトは純粋なJavaScriptでした。ゲームループの管理や衝突検出が非常に注意を要することに直面しました。</p><h3>JSで学んだ間違い：</h3><ul><li>**「ゴッドオブジェクト」：** すべてのロジックを1つのファイルに詰め込もうとすること。</li><li>**FPSの問題：** <strong>requestAnimationFrame</strong> の代わりに <strong>setInterval</strong> を使用すること。</li></ul><p>今では<strong>Godot 4</strong>で、これらの問題の多くはエンジンによって解決され、ゲームデザインに集中できるようになりました。</p>`,
+        post2_title: "ウェブアニメーションのための5つのライブラリ", post2_date: "2025年09月28日",
+        post2_summary: "軽量なCSSソリューションから強力なJSフレームワークまで、私のウェブポートフォリオを生き生きとさせるツールを紹介します。",
+        post2_content: `<p>アニメーションは現代のウェブの魂です。私が習得している5つのツールはこちらです：</p><ol><li><strong>Tailwind CSS Transitions:</strong> 素早いUIアニメーションに最適。</li><li><strong>GSAP (GreenSock):</strong> 複雑なアニメーションのプロ標準。</li><li><strong>Lottie:</strong> After Effectsからアニメーションをインポートするため。</li><li><strong>Three.js:</strong> 3Dアニメーションが必要な場合。</li><li><strong>Framer Motion (React用):</strong> Reactアプリにトランジションを簡単に追加する方法。</li></ol>`,
+        post3_title: "ゲームデザインの考察：2Dで生き残る方法", post3_date: "2025年09月15日",
+        post3_summary: "グラフィックかゲームプレイか？ゲームを本当に素晴らしいものにするものは何か、そしてなぜビジュアルよりメカニクスが重要なのかについての考察。",
+        post3_content: `<p>インディーゲーム開発の世界では、しばしば選択を迫られます。グラフィックは常に重要なのでしょうか？</p><h3>ゲームプレイこそが王様</h3><p>私の経験では、メカニクスが深く魅力的であれば、プレイヤーはシンプルなグラフィックを許してくれます。これは、特に<strong>2D開発</strong>に集中しているソロ開発者にとって重要です。</p><p>私は常に<strong>「まずゲームプレイ、次に磨き上げ」</strong>という原則に従っています。これにより、アイデアを迅速にテストし、失敗したものを早期に排除できます。</p>`,
+        contact_title: "EW Studioへのお問い合わせ", contact_subtitle: "新しいプロジェクトや会話をいつでも歓迎します。メッセージをお送りください！",
+        form_name: "お名前", form_email: "メールアドレス", form_message: "メッセージ", form_submit: "メッセージを送信",
+        footer_text: `&copy; ${new Date().getFullYear()} EW Studio. Axel Voidが<span class="text-red-500">♥</span>を込めて開発しました`,
+    },
+};
+
+// --- КОНЕЦ СЕКЦИИ ДАННЫХ ---
+
+
+// --- 2. ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ И ИНИЦИАЛИЗАЦИЯ ---
+
+const allPages = document.querySelectorAll('.spa-page');
+const projectDetailContainer = document.getElementById('project-detail');
+const postDetailContainer = document.getElementById('post-detail');
+const mobileMenu = document.getElementById('mobile-menu');
+const menuToggle = document.getElementById('mobile-menu-toggle');
+const menuIconOpen = document.getElementById('menu-icon-open');
+const menuIconClose = document.getElementById('menu-icon-close');
+const menuItems = document.querySelectorAll('[data-menu-item]');
+const langDropdown = document.getElementById('lang-dropdown');
+const langButtonText = document.getElementById('lang-text');
+const langButtonFlag = document.getElementById('lang-flag');
+
+const availableLanguages = {
+    ru: { name: 'Русский', flag: '🇷🇺' },
+    en: { name: 'English', flag: '🇬🇧' },
+    jp: { name: '日本語', flag: '🇯🇵' },
+};
+
+function setLanguage(lang) {
+    if (!translations[lang]) return;
+    localStorage.setItem('userLanguage', lang);
+    document.documentElement.lang = lang;
+
+    document.querySelectorAll('[data-lang]').forEach(element => {
+        const key = element.getAttribute('data-lang');
+        if (translations[lang][key]) {
+            element.innerHTML = translations[lang][key];
+        }
+    });
+
+    document.title = translations[lang].page_title;
+    langButtonFlag.textContent = availableLanguages[lang].flag;
+    langButtonText.textContent = lang.toUpperCase();
+    handleRouting();
+}
+
+function initLanguageSwitcher() {
+    langDropdown.innerHTML = '';
+    for (const langCode in availableLanguages) {
+        const langData = availableLanguages[langCode];
+        const item = document.createElement('div');
+        item.className = 'dropdown-item';
+        item.innerHTML = `<span class="text-xl mr-3">${langData.flag}</span> <span>${langData.name}</span>`;
+        item.onclick = () => setLanguage(langCode);
+        langDropdown.appendChild(item);
+    }
+    const savedLang = localStorage.getItem('userLanguage');
+    const browserLang = navigator.language.split('-')[0];
+    const initialLang = savedLang || (translations[browserLang] ? browserLang : 'ru');
+    setLanguage(initialLang);
+}
+
+// --- КОНЕЦ СЕКЦИИ ИНИЦИАЛИЗАЦИИ ---
+
+
+// --- 3. ЛОГИКА РЕНДЕРИНГА КОНТЕНТА ---
+
+function getProjectData(lang, slug) {
+    const t = translations[lang];
+    if (slug === 'project-atlas') {
+        return { slug: 'project-atlas', title: t.project_atlas_title, subtitle: t.project_atlas_subtitle, image: 'https://placehold.co/600x300/6b21a8/ffffff?text=Project+Atlas+2D', description: t.project_atlas_desc, tags: t.project_atlas_tags, details: { lore_title: t.project_atlas_lore_title, lore: t.project_atlas_lore, challenges_title: t.project_atlas_challenges_title, challenges: t.project_atlas_challenges } };
+    } else {
+        return { slug: slug, isWip: true, title: t.project_wip_title, subtitle: t.project_wip_subtitle, image: `https://placehold.co/600x300/111827/ffffff?text=WIP`, description: t.project_wip_desc, tags: t.project_wip_tags };
+    }
+}
+
+function renderProjectList() {
+    const grid = document.getElementById('projects-grid');
+    if (!grid) return;
+    const lang = document.documentElement.lang;
+    const projectSlugs = ['project-atlas', 'wip-1', 'wip-2'];
+    
+    grid.innerHTML = projectSlugs.map(slug => {
+        const p = getProjectData(lang, slug);
+        const cardClass = p.isWip ? 'card rounded-xl overflow-hidden shadow-lg flex flex-col opacity-60' : 'card rounded-xl overflow-hidden shadow-lg flex flex-col';
+        const titleClass = p.slug === 'project-atlas' ? 'text-red-400' : 'text-cyan-200';
+        const clickAction = p.isWip ? '' : `onclick="navigateTo('project/${p.slug}')"`;
+        
+        return `
+            <div class="${cardClass}" ${clickAction}>
+                <img src="${p.image}" alt="Обложка проекта" class="w-full h-48 object-cover border-b border-gray-700">
+                <div class="p-6 flex-grow flex flex-col">
+                    <h3 class="text-xl font-bold mb-3 ${titleClass}">${p.title}</h3>
+                    <p class="text-gray-400 mb-4 flex-grow">${p.description}</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        ${p.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                    ${!p.isWip ? `<a href="#project/${p.slug}" class="btn-primary py-2 px-4 rounded-lg text-center mt-auto" onclick="event.stopPropagation(); navigateTo('project/${p.slug}');">${translations[lang].btn_view_details}</a>` : ''}
+                </div>
+            </div>`;
+    }).join('');
+}
+
+function renderProjectDetail(slug) {
+    const lang = document.documentElement.lang;
+    const t = translations[lang];
+    const project = getProjectData(lang, slug);
+
+    if (!project) { projectDetailContainer.innerHTML = `<h2 class="text-4xl text-red-500 text-center">Project not found</h2>`; return; }
+    
+    const linksHtml = slug === 'project-atlas' ? `
+        <div class="inline-flex items-center justify-center font-bold py-3 px-6 rounded-full shadow-lg bg-gray-700 text-gray-400 cursor-not-allowed">
+            ${t.btn_steam_page} (${t.status_soon})
+        </div>
+        <div class="inline-flex items-center justify-center font-bold py-3 px-6 rounded-full shadow-lg bg-gray-700 text-gray-400 cursor-not-allowed">
+            ${t.btn_playmarket_page} (${t.status_soon})
+        </div>` : '';
+
+    projectDetailContainer.innerHTML = `
+        <div class="max-w-4xl mx-auto">
+            <a href="#projects" class="text-cyan-400 hover:text-cyan-300 mb-6 inline-flex items-center"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>${t.btn_back_to_projects}</a>
+            <img src="${project.image}" alt="${project.title}" class="w-full rounded-xl mb-8 shadow-2xl border border-gray-700 aspect-video object-cover">
+            <h1 class="text-4xl md:text-5xl font-orbitron mb-2 ${project.slug === 'project-atlas' ? 'text-red-400' : 'studio-logo'}">${project.title}</h1>
+            <p class="text-xl text-gray-400 mb-4">${project.subtitle}</p>
+            <div class="flex flex-wrap gap-2 mb-8">${project.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>
+            <div class="flex gap-4 flex-wrap mb-10">${linksHtml}</div>
+            <div class="space-y-12">
+                <div class="p-6 bg-gray-900 rounded-xl border border-gray-700"><h3 class="text-3xl font-bold text-cyan-400 mb-4">${project.details.lore_title}</h3><div class="text-lg text-gray-300 leading-relaxed">${project.details.lore}</div></div>
+                <div class="p-6 bg-gray-900 rounded-xl border border-gray-700"><h3 class="text-3xl font-bold text-cyan-400 mb-4">${project.details.challenges_title}</h3><ul class="list-disc list-inside text-gray-400 space-y-3 pl-4">${project.details.challenges.map(c => `<li>${c}</li>`).join('')}</ul></div>
+            </div>
+        </div>`;
+}
+
+function getPostData(lang, slug) {
+    const t = translations[lang];
+    const posts = {
+        'post-1': { slug: 'post-1', title: t.post1_title, date: t.post1_date, summary: t.post1_summary, content: t.post1_content, image: 'https://placehold.co/600x300/334155/ffffff?text=Godot' },
+        'post-2': { slug: 'post-2', title: t.post2_title, date: t.post2_date, summary: t.post2_summary, content: t.post2_content, image: 'https://placehold.co/600x300/334155/ffffff?text=Animation' },
+        'post-3': { slug: 'post-3', title: t.post3_title, date: t.post3_date, summary: t.post3_summary, content: t.post3_content, image: 'https://placehold.co/600x300/334155/ffffff?text=Gamedev' }
+    };
+    return posts[slug];
+}
+
+function renderBlogList() {
+    const grid = document.getElementById('blog-grid');
+    if (!grid) return;
+    const lang = document.documentElement.lang;
+    const postSlugs = ['post-1', 'post-2', 'post-3'];
+
+    grid.innerHTML = postSlugs.map(slug => {
+        const post = getPostData(lang, slug);
+        return `
+            <div class="card rounded-xl overflow-hidden shadow-lg flex flex-col" onclick="navigateTo('post/${post.slug}')">
+                <img src="${post.image}" alt="Обложка поста" class="w-full h-48 object-cover border-b border-gray-700">
+                <div class="p-6 flex-grow flex flex-col">
+                    <p class="text-sm text-gray-500 mb-2">${post.date}</p>
+                    <h3 class="text-xl font-bold mb-3 text-cyan-200">${post.title}</h3>
+                    <p class="text-gray-400 mb-4 flex-grow">${post.summary}</p>
+                    <a href="#post/${post.slug}" class="text-cyan-400 hover:text-cyan-300 font-semibold mt-auto" onclick="event.stopPropagation(); navigateTo('post/${post.slug}');">
+                        ${translations[lang].btn_read_more}
+                    </a>
+                </div>
+            </div>`;
+    }).join('');
+}
+
+function renderPostDetail(slug) {
+    const lang = document.documentElement.lang;
+    const t = translations[lang];
+    const post = getPostData(lang, slug);
+
+    if (!post) { postDetailContainer.innerHTML = `<h2 class="text-4xl text-red-500 text-center">Post not found</h2>`; return; }
+
+    postDetailContainer.innerHTML = `
+        <div class="max-w-3xl mx-auto">
+            <a href="#blog" class="text-cyan-400 hover:text-cyan-300 mb-6 inline-flex items-center"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>${t.btn_back_to_blog}</a>
+            <p class="text-sm text-gray-500 mb-2">${post.date}</p>
+            <h1 class="text-4xl md:text-5xl font-orbitron mb-6 text-white">${post.title}</h1>
+            <img src="${post.image}" alt="${post.title}" class="w-full rounded-xl mb-8 shadow-xl border border-gray-700 aspect-video object-cover">
+            <div class="prose max-w-none">${post.content}</div>
+        </div>`;
+}
+
+// --- КОНЕЦ СЕКЦИИ РЕНДЕРИНГА ---
+
+
+// --- 4. РОУТЕР И УПРАВЛЕНИЕ СТРАНИЦАМИ ---
+
+function navigateTo(path) { window.location.hash = path; }
+
+function hideAllPages() {
+    allPages.forEach(page => { page.classList.add('hidden'); page.classList.remove('is-visible'); });
+}
+
+function showPage(pageId, slug = null) {
+    hideAllPages();
+    const page = document.getElementById(pageId);
+    if (page) {
+        page.classList.remove('hidden');
+        setTimeout(() => page.classList.add('is-visible'), 50); 
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        if (pageId === 'project-detail' && slug) renderProjectDetail(slug);
+        else if (pageId === 'post-detail' && slug) renderPostDetail(slug);
+    }
+}
+
+function handleRouting() {
+    let hash = window.location.hash.slice(1) || 'about';
+    const parts = hash.split('/');
+    const mainRoute = parts[0];
+
+    renderProjectList();
+    renderBlogList();
+
+    const routes = {
+        'hero': 'about', 'about': 'about', 'projects': 'projects-list',
+        'blog': 'blog-list', 'contact': 'contact',
+        'project': () => showPage('project-detail', parts[1]),
+        'post': () => showPage('post-detail', parts[1]),
+    };
+    
+    const action = routes[mainRoute];
+    if (typeof action === 'function') {
+        action();
+    } else if (typeof action === 'string') {
+        showPage(action);
+    } else {
+        showPage('about');
+    }
+}
+
+
+// --- 5. ОБРАБОТЧИКИ СОБЫТИЙ И АНИМАЦИИ ---
+
+function toggleMobileMenu() {
+    const isHidden = mobileMenu.classList.contains('hidden');
+    mobileMenu.classList.toggle('hidden');
+    menuIconOpen.classList.toggle('hidden', !isHidden);
+    menuIconClose.classList.toggle('hidden', isHidden);
+}
+menuToggle.addEventListener('click', toggleMobileMenu);
+menuItems.forEach(item => { item.addEventListener('click', toggleMobileMenu); });
+
+const canvas = document.getElementById('hero-canvas');
+const ctx = canvas.getContext('2d');
+let particlesArray;
+let mouse = { x: null, y: null, radius: 0 };
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    mouse.radius = (canvas.height / 120) * (canvas.width / 120);
+    initParticles();
+}
+window.addEventListener('resize', resizeCanvas);
+window.addEventListener('mousemove', e => { mouse.x = e.x; mouse.y = e.y; });
+window.addEventListener('mouseout', () => { mouse.x = undefined; mouse.y = undefined; });
+
+class Particle {
+    constructor(x, y, dX, dY, size) { this.x = x; this.y = y; this.directionX = dX; this.directionY = dY; this.size = size; }
+    draw() {
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+        gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+        gradient.addColorStop(0.5, 'rgba(34, 211, 238, 0.8)');
+        gradient.addColorStop(1, 'rgba(6, 182, 212, 0.2)');
+        ctx.fillStyle = gradient; ctx.fill();
+    }
+    update() {
+        if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+        if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+        let dx = mouse.x - this.x, dy = mouse.y - this.y, dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < mouse.radius + this.size) {
+            if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 2;
+            if (mouse.x > this.x && this.x > this.size * 10) this.x -= 2;
+            if (mouse.y < this.y && this.y < canvas.height - this.size * 10) this.y += 2;
+            if (mouse.y > this.y && this.y > this.size * 10) this.y -= 2;
+        }
+        this.x += this.directionX; this.y += this.directionY; this.draw();
+    }
+}
+function initParticles() {
+    particlesArray = [];
+    let numParticles = (canvas.height * canvas.width) / 10000;
+    if (numParticles > 150) numParticles = 150;
+    for (let i = 0; i < numParticles; i++) {
+        let size = Math.random() * 2.5 + 1.5;
+        let x = Math.random() * (canvas.width - size * 2) + size * 2;
+        let y = Math.random() * (canvas.height - size * 2) + size * 2;
+        particlesArray.push(new Particle(x, y, Math.random()*0.4-0.2, Math.random()*0.4-0.2, size));
+    }
+}
+function connectParticles() {
+    const maxDist = 120;
+    for (let a=0; a < particlesArray.length; a++) {
+        for (let b=a; b < particlesArray.length; b++) {
+            let dist = Math.sqrt(((particlesArray[a].x - particlesArray[b].x)**2) + ((particlesArray[a].y - particlesArray[b].y)**2));
+            if (dist < maxDist) {
+                ctx.strokeStyle = `rgba(34, 211, 238, ${ (1 - dist/maxDist) * 0.7 })`;
+                ctx.lineWidth = 0.5; ctx.beginPath();
+                ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                ctx.lineTo(particlesArray[b].x, particlesArray[b].y); ctx.stroke();
+            }
+        }
+    }
+}
+function animate() {
+    requestAnimationFrame(animate);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particlesArray.forEach(p => p.update());
+    connectParticles();
+}
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.1 });
+function observeSections() {
+    document.querySelectorAll('.fade-in-section:not(.is-visible)').forEach(section => observer.observe(section));
+}
+
+// --- 6. ЗАПУСК ПРИЛОЖЕНИЯ ---
+document.addEventListener('DOMContentLoaded', () => {
+    initLanguageSwitcher();
+    handleRouting();
+    window.addEventListener('hashchange', handleRouting);
+    resizeCanvas();
+    animate();
+    observeSections();
+    window.addEventListener('hashchange', observeSections);
+});
+</script>
+</body>
+</html>
+
